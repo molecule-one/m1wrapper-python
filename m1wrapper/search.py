@@ -52,7 +52,6 @@ class BatchSearch:
 
     def __run(self, targets, parameters):
         payload = self.__prepare_payload(targets, parameters)
-        url = urljoin(self.base_url, api_search_endpoint),
         response = requests.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),

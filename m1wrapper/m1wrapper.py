@@ -15,7 +15,7 @@ class MoleculeOneWrapper:
         api_base_url: str = api_base_url
     ):
         self.api_token = api_token
-        self.api_base_url = f'{api_base_url}/' # ensure base_url ends with '/'
+        self.api_base_url = f'{api_base_url}/api/v1/'
         self.request_headers = self.__prepare_request_headers()
 
     def __prepare_request_headers(self) -> dict:
