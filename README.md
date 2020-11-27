@@ -7,8 +7,6 @@
 ```
 pip install git+https://github.com/molecule-one/m1wrapper-python
 ```
-NOTE: make sure to install package to the intended python environment.
-
 ### Initialization:
 ```py
 from m1wrapper import MoleculeOneWrapper
