@@ -30,8 +30,7 @@ search = m1wrapper.run_batch_search(
 - *targets*: list of target compounds in SMILES format
 - *parameters* (optional): additional configuration for your batch
   scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for more information.
-
-
+- *starting_materials* (optional): list of available compounds in SMILES format
 ### Getting exisiting scoring request by id:
 ```py
 search = m1wrapper.get_batch_search(id)

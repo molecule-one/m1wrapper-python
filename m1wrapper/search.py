@@ -36,22 +36,31 @@ class BatchSearch:
         search_id=None,
         targets=None,
         parameters=None,
+        starting_materials=None,
     ):
         self.search_id = search_id
         self.base_url = base_url
         self.headers = headers
         if self.search_id is None:
-            new_search = self.__run(targets=targets, parameters=parameters)
+            new_search = self.__run(
+                    targets=targets,
+                    parameters=parameters,
+                    starting_materials=starting_materials
+            )
             self.search_id = new_search['id']
 
-    def __prepare_payload(self, targets, parameters) -> dict:
-        return {
+    def __prepare_payload(self, targets, parameters, starting_materials) -> dict:
+        payload = {
             'targets': targets,
             'params': parameters or {},
         }
+        if starting_materials is not None:
+            payload["startingMaterials"] = starting_materials
 
-    def __run(self, targets, parameters):
-        payload = self.__prepare_payload(targets, parameters)
+        return payload
+
+    def __run(self, targets, parameters, starting_materials):
+        payload = self.__prepare_payload(targets, parameters, starting_materials)
         response = requests.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),
