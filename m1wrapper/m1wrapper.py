@@ -28,13 +28,15 @@ class MoleculeOneWrapper:
     def run_batch_search(
             self,
             targets: List[str],
-            parameters: Dict = None
+            parameters: Dict = None,
+            starting_materials: List[str] = None,
     ) -> BatchSearch:
         return BatchSearch(
                 self.api_base_url,
                 self.request_headers,
                 targets=targets,
-                parameters=parameters
+                parameters=parameters,
+                starting_materials=starting_materials
             )
 
     def get_batch_search(self, search_id: str) -> BatchSearch:
