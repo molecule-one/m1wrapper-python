@@ -4,3 +4,6 @@ api_base_url = 'https://app.molecule.one/'
 api_search_endpoint = 'batch-search'
 api_results_endpoint = 'batch-search-result'
 status_check_delay_s = 15
+http_backoff_factor = 5
+http_retries = 7
+http_retries_on_connect = 10

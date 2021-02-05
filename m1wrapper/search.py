@@ -1,13 +1,20 @@
 import requests
 import json
 import time
+import logging
 from typing import List
 from urllib.parse import urljoin
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+requests.packages.urllib3.add_stderr_logger(logging.WARNING)
 
 from .config import (
     api_search_endpoint,
     api_results_endpoint,
-    status_check_delay_s
+    status_check_delay_s,
+    http_backoff_factor,
+    http_retries,
+    http_retries_on_connect
 )
 
 
@@ -41,6 +48,7 @@ class BatchSearch:
         self.search_id = search_id
         self.base_url = base_url
         self.headers = headers
+        self.http = self.__prepare_http()
         if self.search_id is None:
             new_search = self.__run(
                     targets=targets,
@@ -59,9 +67,23 @@ class BatchSearch:
 
         return payload
 
+    def __prepare_http(self):
+        retry_strategy = Retry(
+            total=http_retries,
+            connect=http_retries_on_connect,
+            backoff_factor=http_backoff_factor,
+            status_forcelist=[104, 111, 429, 500, 502, 503, 504],
+            method_whitelist=["HEAD", "GET", "OPTIONS", "POST", "DELETE", "PUT"]
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        http = requests.Session()
+        http.mount("https://", adapter)
+        http.mount("http://", adapter)
+        return http
+
     def __run(self, targets, parameters, starting_materials):
         payload = self.__prepare_payload(targets, parameters, starting_materials)
-        response = requests.post(
+        response = self.http.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),
             headers=self.headers,
@@ -74,7 +96,7 @@ class BatchSearch:
         return cls(base_url, headers, search_id)
 
     def get_status(self):
-        response = requests.get(
+        response = self.http.get(
             urljoin(self.base_url, f'{api_search_endpoint}/{self.search_id}'),
             headers=self.headers,
         )
@@ -100,7 +122,7 @@ class BatchSearch:
         precision: int = None,
         only: List[str] = None
     ):
-        response = requests.get(
+        response = self.http.get(
             urljoin(self.base_url, f'{api_results_endpoint}/{self.search_id}'),
             headers=self.headers,
             params={
@@ -112,7 +134,7 @@ class BatchSearch:
         return response.json()
 
     def delete(self):
-        response = requests.delete(
+        response = self.http.delete(
             urljoin(self.base_url, f'{api_search_endpoint}/{self.search_id}'),
             headers=self.headers,
         )
