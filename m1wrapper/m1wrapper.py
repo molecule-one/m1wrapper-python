@@ -1,8 +1,15 @@
 from typing import List, Dict
+from enum import IntEnum
 
 from .search import BatchSearch
 from .config import api_token_version, wrapper_version, api_base_url
 
+class Priority(IntEnum):
+    LOWEST = 1,
+    LOW = 3,
+    NORMAL = 5,
+    HIGH = 8,
+    HIGHEST = 10
 
 class MoleculeOneWrapper:
     """
@@ -29,6 +36,7 @@ class MoleculeOneWrapper:
             self,
             targets: List[str],
             parameters: Dict = None,
+            priority = Priority.NORMAL,
             starting_materials: List[str] = None,
     ) -> BatchSearch:
         return BatchSearch(
@@ -36,6 +44,7 @@ class MoleculeOneWrapper:
                 self.request_headers,
                 targets=targets,
                 parameters=parameters,
+                priority=int(priority),
                 starting_materials=starting_materials
             )
 
