@@ -27,7 +27,7 @@ search = m1wrapper.run_batch_search(
 - *targets*: list of target compounds in SMILES format
 - *parameters* (optional): additional configuration for your batch
   scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for more information.
-- priority (optional): priority of the batch request.
+- *priority* (optional): priority of the batch request.
 - *starting_materials* (optional): list of available compounds in SMILES format
 
 ### Batch scoring priorities:
@@ -46,7 +46,7 @@ m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
 search = m1wrapper.run_batch_search(
     targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
     parameters={'exploratory_search': False, 'detail_level': 'score'},
-    priority=Priority.HIGH
+    priority=Priority.HIGH)
 ```
 
 ### Getting exisiting scoring request by id:
