@@ -43,6 +43,7 @@ class BatchSearch:
         search_id=None,
         targets=None,
         parameters=None,
+        priority=None,
         starting_materials=None,
     ):
         self.search_id = search_id
@@ -53,14 +54,16 @@ class BatchSearch:
             new_search = self.__run(
                     targets=targets,
                     parameters=parameters,
+                    priority=priority,
                     starting_materials=starting_materials
             )
             self.search_id = new_search['id']
 
-    def __prepare_payload(self, targets, parameters, starting_materials) -> dict:
+    def __prepare_payload(self, targets, parameters, priority, starting_materials ) -> dict:
         payload = {
             'targets': targets,
             'params': parameters or {},
+            'priority': priority
         }
         if starting_materials is not None:
             payload["startingMaterials"] = starting_materials
@@ -81,8 +84,8 @@ class BatchSearch:
         http.mount("http://", adapter)
         return http
 
-    def __run(self, targets, parameters, starting_materials):
-        payload = self.__prepare_payload(targets, parameters, starting_materials)
+    def __run(self, targets, parameters, priority, starting_materials):
+        payload = self.__prepare_payload(targets, parameters, priority, starting_materials)
         response = self.http.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),

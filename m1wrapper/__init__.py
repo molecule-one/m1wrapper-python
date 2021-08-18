@@ -1,1 +1,1 @@
-from .m1wrapper import MoleculeOneWrapper
+from .m1wrapper import MoleculeOneWrapper, Priority
