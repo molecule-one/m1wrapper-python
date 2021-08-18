@@ -18,7 +18,6 @@ m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
   server, but you will need to provide custom value if you're using a dedicated solution.
 
 ### Running batch scoring request:
-
 ```py
 search = m1wrapper.run_batch_search(
     targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
@@ -28,7 +27,28 @@ search = m1wrapper.run_batch_search(
 - *targets*: list of target compounds in SMILES format
 - *parameters* (optional): additional configuration for your batch
   scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for more information.
+- priority (optional): priority of the batch request.
 - *starting_materials* (optional): list of available compounds in SMILES format
+
+### Batch scoring priorities:
+Priorities are defined as integers in a range of 1 to 10. Requests with higher priority will be processed before those with lower priority.
+For convenience, we also define a `Priority` enum with the following variants:
+- `Priority.LOWEST` (1)
+- `Priority.LOW` (3)
+- `Priority.NORMAL` (5, default)
+- `Priority.HIGH` (8)
+- `Priority.HIGHEST` (10)
+
+#### Example:
+```py
+from m1wrapper import MoleculeOneWrapper, Priority
+m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
+search = m1wrapper.run_batch_search(
+    targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
+    parameters={'exploratory_search': False, 'detail_level': 'score'},
+    priority=Priority.HIGH
+```
+
 ### Getting exisiting scoring request by id:
 ```py
 search = m1wrapper.get_batch_search(id)
