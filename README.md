@@ -17,20 +17,41 @@ m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
 - *api_base_url* (optional): URI of the batch scoring service. Defaults to Molecule One's public
   server, but you will need to provide custom value if you're using a dedicated solution.
 
-### Running batch scoring request:
+### Getting a list of batch scoring requests:
+```py
+searches = m1wrapper.list_batch_searches()
+```
+
+### Running new batch scoring request:
 ```py
 search = m1wrapper.run_batch_search(
     targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
-    parameters={'exploratory_search': False, 'detail_level': 'score'}
+    parameters={'model': 'gat'}
 )
 ```
 - *targets*: list of target compounds in SMILES format
 - *parameters* (optional): additional configuration for your batch
   scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for more information.
-- *priority* (optional): priority of the batch request.
+- *detail_level* (optional): [detail level of the batch request](#batch-scoring-detail-level)
+- *priority* (optional): [priority of the batch request](#batch-scoring-priorities)
 - *starting_materials* (optional): list of available compounds in SMILES format
 
-### Batch scoring priorities:
+### Batch scoring detail level
+Detail level determines how much information about each target synthesis you'll get. We define it as a `DetailLevel` enum with two variants:
+- `DetailLevel.SCORE` (default) - useful when you're not interested in full synthesis json/UI preview, but only numerical values
+- `DetailLevel.SYNTHESIS` - when you're also interested in reactions and compounds leading to the target product
+#### Example:
+```py
+from m1wrapper import MoleculeOneWrapper, DetailLevel
+m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
+search = m1wrapper.run_batch_search(
+    targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
+    parameters={'model': 'gat', },
+    detail_level=DetailLevel.SCORE
+)
+```
+
+### Batch scoring priorities
 Priorities are defined as integers in a range of 1 to 10. Requests with higher priority will be processed before those with lower priority.
 For convenience, we also define a `Priority` enum with the following variants:
 - `Priority.LOWEST` (1)
@@ -45,8 +66,9 @@ from m1wrapper import MoleculeOneWrapper, Priority
 m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
 search = m1wrapper.run_batch_search(
     targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
-    parameters={'exploratory_search': False, 'detail_level': 'score'},
-    priority=Priority.HIGH)
+    parameters={'model': 'gat'},
+    priority=Priority.HIGH
+)
 ```
 
 ### Getting exisiting scoring request by id:
@@ -83,7 +105,7 @@ Returns JSON object of the following shape:
       {
         "targetSmiles": "Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C",
         "status": "ok",
-        "result": "7.53",
+        "result": "7.53000",
         "certainty": "0.581",
         "price": "5230",
         "reactionCount": 5,

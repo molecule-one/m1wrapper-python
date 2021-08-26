@@ -1,4 +1,4 @@
-from m1wrapper import MoleculeOneWrapper
+from m1wrapper import MoleculeOneWrapper, Priority, DetailLevel
 
 if __name__ == '__main__':
     # get your token at https://app.molecule.one/dashboard/user/api-tokens
@@ -6,9 +6,14 @@ if __name__ == '__main__':
 
     m1wrapper = MoleculeOneWrapper(token)
 
+    searches = m1wrapper.list_batch_searches()
+    print('previous searches:', searches)
+
     search = m1wrapper.run_batch_search(
         targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
-        parameters={'exploratory_search': False, 'detail_level': 'score'}
+        parameters={'model': 'gat'},
+        detail_level=DetailLevel.SCORE,
+        priority=Priority.LOW
     )
     print('created search:', search.search_id)
 
