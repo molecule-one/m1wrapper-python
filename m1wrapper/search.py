@@ -34,6 +34,7 @@ class BatchSearch:
         parameters=None,
         detail_level=None,
         priority=None,
+        invalid_target_strategy=None,
         starting_materials=None,
     ):
         self.search_id = search_id
@@ -46,16 +47,18 @@ class BatchSearch:
                     parameters=parameters,
                     detail_level=detail_level,
                     priority=priority,
+                    invalid_target_strategy=invalid_target_strategy,
                     starting_materials=starting_materials
             )
             self.search_id = new_search['id']
 
-    def __prepare_payload(self, targets, parameters, detail_level, priority, starting_materials ) -> dict:
+    def __prepare_payload(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials ) -> dict:
         payload = {
             'targets': targets,
             'parameters': parameters or {},
             'detail_level': detail_level,
-            'priority': priority
+            'priority': priority,
+            'invalid_target_strategy': invalid_target_strategy
         }
         if starting_materials is not None:
             payload["starting_materials"] = starting_materials
@@ -76,8 +79,8 @@ class BatchSearch:
         http.mount("http://", adapter)
         return http
 
-    def __run(self, targets, parameters, detail_level, priority, starting_materials):
-        payload = self.__prepare_payload(targets, parameters, detail_level, priority, starting_materials)
+    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials):
+        payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials)
         response = self.http.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),
@@ -137,9 +140,8 @@ class BatchSearch:
         results = response.json()
 
         precision_str = '.' + str(precision) + 'f'
-        # TODO: add more transformations, batch them if performance hit is observed (test on ~100k elements)
-        results = traverse_modify(results, '[].result', lambda el: format(float(el), precision_str))
-        results = traverse_modify(results, '[].certainty', lambda el: format(float(el), precision_str))
+        results = traverse_modify(results, '[].result', lambda el: format(float(el), precision_str) if el else el)
+        results = traverse_modify(results, '[].certainty', lambda el: format(float(el), precision_str) if el else el)
         results = traverse_modify(results, '[].price', lambda el: format(float(el), precision_str) if el else el)
         return results
 

@@ -26,6 +26,10 @@ class DetailLevel(str, Enum):
     SCORE = 'score',
     SYNTHESIS = 'synthesis'
 
+class InvalidTargetStrategy(str, Enum):
+    REJECT = 'reject',
+    PASS = 'pass'
+
 class MoleculeOneWrapper:
     """
     Wrapper for MoleculeOne Batch Scoring REST API
@@ -62,6 +66,7 @@ class MoleculeOneWrapper:
             parameters: Dict = None,
             detail_level = DetailLevel.SCORE,
             priority = Priority.NORMAL,
+            invalid_target_strategy = InvalidTargetStrategy.REJECT ,
             starting_materials: List[str] = None,
     ) -> BatchSearch:
         return BatchSearch(
@@ -71,6 +76,7 @@ class MoleculeOneWrapper:
                 parameters=parameters,
                 detail_level=detail_level,
                 priority=int(priority),
+                invalid_target_strategy=invalid_target_strategy,
                 starting_materials=starting_materials
             )
 
