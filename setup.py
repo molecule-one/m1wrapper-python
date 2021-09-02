@@ -12,6 +12,7 @@ setup(
     version='0.1.0',
     description='Molecule One API Wrapper',
     long_description=readme,
+    long_description_content_type='text/markdown',
     author='Szymon Pilkowski',
     author_email='szymon.pilkowski@molecule.one',
     url='https://github.com/molecule-one/m1wrapper-python',
