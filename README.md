@@ -12,7 +12,7 @@ pip install git+https://github.com/molecule-one/m1wrapper-python
 from m1wrapper import MoleculeOneWrapper
 m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
 ```
-- *api_token*: API token you'll need to authorize in our system. You can get
+- *api_token*: API token you'll need to authorize in our system. You can
   generate yours at https://app.molecule.one/dashboard/user/api-tokens
 - *api_base_url* (optional): URI of the batch scoring service. Defaults to Molecule One's public
   server, but you will need to provide custom value if you're using a dedicated solution.
