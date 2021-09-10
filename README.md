@@ -31,7 +31,7 @@ search = m1wrapper.run_batch_search(
 ```
 - *targets*: list of target compounds in SMILES format
 - *parameters* (optional): additional configuration for your batch
-  scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for more information.
+  scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/api-v2.md) for more information.
 - *detail_level* (optional): [detail level of the batch request](#batch-scoring-detail-level)
 - *priority* (optional): [priority of the batch request](#batch-scoring-priorities)
 - *invalid_target_strategy* (optional): if set to `InvalidTargetStrategy.PASS`, targets that cannot be canonized by our SMILES parser won't cause the whole batch request to be rejected. Defaults to `InvalidTargetStrategy.REJECT` (default).
