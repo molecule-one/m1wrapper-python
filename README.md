@@ -94,7 +94,7 @@ Results are made available as soon as they are processed. This method
 provided a way to start working with some of your results without waiting until all targets are processed.
 This usually means implementing some kind of polling/scheduling on your side.
 ```py
-results = search.get_partial_results(precision=5, only=["targetSmiles, "result"])
+results = search.get_partial_results(precision=5, only=["target_smiles", "result"])
 ```
 - *precision* (optional): format the floating point scores returned by the system (certainty, result, price) to given number of significant digits.
 - *only* (optional): fetch only a subset of values. Defaults to
@@ -104,22 +104,42 @@ Returns JSON object of the following shape:
 ```json
     [
       {
-        "targetSmiles": "Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C",
-        "status": "ok",
-        "result": "7.53000",
-        "certainty": "0.581",
-        "price": "5230",
-        "reactionCount": 5,
-        "timedOut": false
+        'target_smiles': 'Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C',
+        'result': '7.53000'
       },
     ...
     ]
 ```
+#### All values:
+```py
+results = search.get_partial_results(precision=5)
+```
+
+Returns JSON object of the following shape:
+```json
+    [
+      {
+        'target_smiles': 'Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C',
+        'status': 'ok',
+        'result': '7.53000',
+        'certainty': '0.581',
+        'price': '5230',
+        'reaction_count': 5,
+        'timed_out': False,
+        'started_at': '2021-09-13T14:45:31.012Z',
+        'finished_at': '2021-09-13T14:46:39.199Z',
+        'running_time': 68.187,
+        'url': 'https://app.molecule.one/dashboard/synthesis-plans/batch/b787bf5f-6736-443c-bef1-8f10a37da246/result/0e3c6e13-fce1-46ba-9811-8fe66e0e4122'
+      },
+    ...
+    ]
+```
+
 See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for a full explaination of returned fields.
 
 ### Getting complete results:
 ```py
-results = search.get_results(precision=5, only=["targetSmiles, "result"])
+results = search.get_results(precision=5, only=["target_smiles", "result"])
 ```
 If you don't want to implement scheduling on your own, this method
 provides a simple way to wait until all targets are processed (sending periodical checks using

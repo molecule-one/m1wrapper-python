@@ -9,7 +9,7 @@ with open('LICENSE') as f:
 
 setup(
     name='m1_api_wrapper',
-    version='0.1.0',
+    version='2.0.0',
     description='Molecule One API Wrapper',
     long_description=readme,
     long_description_content_type='text/markdown',
@@ -17,6 +17,9 @@ setup(
     author_email='szymon.pilkowski@molecule.one',
     url='https://github.com/molecule-one/m1wrapper-python',
     license=license,
-    packages=['m1wrapper']
+    packages=['m1wrapper'],
+    install_requires=[
+        'requests'
+    ] 
 )
 

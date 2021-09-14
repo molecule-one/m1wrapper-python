@@ -10,7 +10,8 @@ if __name__ == '__main__':
     print('previous searches:', searches)
 
     search = m1wrapper.run_batch_search(
-        targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
+        targets=[
+            'cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
         parameters={'model': 'gat'},
         detail_level=DetailLevel.SCORE,
         priority=Priority.LOW
@@ -29,7 +30,8 @@ if __name__ == '__main__':
     partial_results = search.get_partial_results()
     print("partial results:", partial_results)
 
-    results = search.get_results(precision=4, only=['targetSmiles', 'price', 'result'])
+    results = search.get_results(
+        precision=4, only=['target_smiles', 'price', 'result'])
     print('results:', results)
 
     m1wrapper.delete_batch_search(search.search_id)
