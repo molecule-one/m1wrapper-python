@@ -12,25 +12,47 @@ pip install git+https://github.com/molecule-one/m1wrapper-python
 from m1wrapper import MoleculeOneWrapper
 m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
 ```
-- *api_token*: API token you'll need to authorize in our system. You can get
+- *api_token*: API token you'll need to authorize in our system. You can
   generate yours at https://app.molecule.one/dashboard/user/api-tokens
 - *api_base_url* (optional): URI of the batch scoring service. Defaults to Molecule One's public
   server, but you will need to provide custom value if you're using a dedicated solution.
 
-### Running batch scoring request:
+### Getting a list of batch scoring requests:
+```py
+searches = m1wrapper.list_batch_searches()
+```
+
+### Running new batch scoring request:
 ```py
 search = m1wrapper.run_batch_search(
     targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
-    parameters={'exploratory_search': False, 'detail_level': 'score'}
+    parameters={'model': 'gat'}
 )
 ```
 - *targets*: list of target compounds in SMILES format
 - *parameters* (optional): additional configuration for your batch
-  scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for more information.
-- *priority* (optional): priority of the batch request.
+  scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/api-v2.md) for more information.
+- *detail_level* (optional): [detail level of the batch request](#batch-scoring-detail-level)
+- *priority* (optional): [priority of the batch request](#batch-scoring-priorities)
+- *invalid_target_strategy* (optional): if set to `InvalidTargetStrategy.PASS`, targets that cannot be canonized by our SMILES parser won't cause the whole batch request to be rejected. Defaults to `InvalidTargetStrategy.REJECT`.
 - *starting_materials* (optional): list of available compounds in SMILES format
 
-### Batch scoring priorities:
+### Batch scoring detail level
+Detail level determines how much information about each target synthesis you'll get. We define it as a `DetailLevel` enum with two variants:
+- `DetailLevel.SCORE` (default) - useful when you're not interested in full synthesis json/UI preview, but only numerical values
+- `DetailLevel.SYNTHESIS` - when you're also interested in reactions and compounds leading to the target product
+#### Example:
+```py
+from m1wrapper import MoleculeOneWrapper, DetailLevel
+m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
+search = m1wrapper.run_batch_search(
+    targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
+    parameters={'model': 'gat', },
+    detail_level=DetailLevel.SCORE
+)
+```
+
+### Batch scoring priorities
 Priorities are defined as integers in a range of 1 to 10. Requests with higher priority will be processed before those with lower priority.
 For convenience, we also define a `Priority` enum with the following variants:
 - `Priority.LOWEST` (1)
@@ -45,8 +67,9 @@ from m1wrapper import MoleculeOneWrapper, Priority
 m1wrapper = MoleculeOneWrapper(api_token, 'https://app.molecule.one')
 search = m1wrapper.run_batch_search(
     targets=['cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
-    parameters={'exploratory_search': False, 'detail_level': 'score'},
-    priority=Priority.HIGH)
+    parameters={'model': 'gat'},
+    priority=Priority.HIGH
+)
 ```
 
 ### Getting exisiting scoring request by id:
@@ -71,32 +94,53 @@ Results are made available as soon as they are processed. This method
 provided a way to start working with some of your results without waiting until all targets are processed.
 This usually means implementing some kind of polling/scheduling on your side.
 ```py
-results = search.get_partial_results(precision=5, only=["targetSmiles, "result"])
+results = search.get_partial_results(precision=5, only=["target_smiles", "result"])
 ```
 - *precision* (optional): format the floating point scores returned by the system (certainty, result, price) to given number of significant digits.
 - *only* (optional): fetch only a subset of values. Defaults to
   all values.
 
 Returns JSON object of the following shape:
+Returns an object of the following shape:
+```python
+    [
+      {
+        'target_smiles': 'Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C',
+        'result': '7.53000'
+      },
+      ...
+    ]
+```
+#### All values:
+```py
+results = search.get_partial_results(precision=5)
+```
+
+Returns JSON object of the following shape:
 ```json
     [
       {
-        "targetSmiles": "Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C",
-        "status": "ok",
-        "result": "7.53",
-        "certainty": "0.581",
-        "price": "5230",
-        "reactionCount": 5,
-        "timedOut": false
+        'target_smiles': 'Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C',
+        'status': 'ok',
+        'result': '7.53000',
+        'certainty': '0.581',
+        'price': '5230',
+        'reaction_count': 5,
+        'timed_out': False,
+        'started_at': '2021-09-13T14:45:31.012Z',
+        'finished_at': '2021-09-13T14:46:39.199Z',
+        'running_time': 68.187,
+        'url': 'https://app.molecule.one/dashboard/synthesis-plans/batch/b787bf5f-6736-443c-bef1-8f10a37da246/result/0e3c6e13-fce1-46ba-9811-8fe66e0e4122'
       },
-    ...
+      ...
     ]
 ```
+
 See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for a full explaination of returned fields.
 
 ### Getting complete results:
 ```py
-results = search.get_results(precision=5, only=["targetSmiles, "result"])
+results = search.get_results(precision=5, only=["target_smiles", "result"])
 ```
 If you don't want to implement scheduling on your own, this method
 provides a simple way to wait until all targets are processed (sending periodical checks using

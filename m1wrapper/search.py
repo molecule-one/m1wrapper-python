@@ -8,8 +8,11 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 requests.packages.urllib3.add_stderr_logger(logging.WARNING)
 
+from .traverse import traverse_modify
+
 from .config import (
     api_search_endpoint,
+    api_status_endpoint,
     api_results_endpoint,
     status_check_delay_s,
     http_backoff_factor,
@@ -17,23 +20,9 @@ from .config import (
     http_retries_on_connect
 )
 
-
-def format_error_message(error):
-    if error["message"] and error["errors"]:
-        return f'{error["message"]}: {repr(error["errors"])}'
-    if error["message"]:
-        return f'{error["message"]}'
-    else:
-        return "unknown error"
-
-
-def maybe_handle_error(response):
-    if response.status_code >= 400 and response.status_code <= 500:
-        error = format_error_message(response.json())
-        raise requests.exceptions.HTTPError(error)
-    else:
-        response.raise_for_status()
-
+from .errors import (
+    maybe_handle_error
+)
 
 class BatchSearch:
     def __init__(
@@ -43,7 +32,9 @@ class BatchSearch:
         search_id=None,
         targets=None,
         parameters=None,
+        detail_level=None,
         priority=None,
+        invalid_target_strategy=None,
         starting_materials=None,
     ):
         self.search_id = search_id
@@ -54,19 +45,23 @@ class BatchSearch:
             new_search = self.__run(
                     targets=targets,
                     parameters=parameters,
+                    detail_level=detail_level,
                     priority=priority,
+                    invalid_target_strategy=invalid_target_strategy,
                     starting_materials=starting_materials
             )
             self.search_id = new_search['id']
 
-    def __prepare_payload(self, targets, parameters, priority, starting_materials ) -> dict:
+    def __prepare_payload(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials ) -> dict:
         payload = {
             'targets': targets,
-            'params': parameters or {},
-            'priority': priority
+            'parameters': parameters or {},
+            'detail_level': detail_level,
+            'priority': priority,
+            'invalid_target_strategy': invalid_target_strategy
         }
         if starting_materials is not None:
-            payload["startingMaterials"] = starting_materials
+            payload["starting_materials"] = starting_materials
 
         return payload
 
@@ -75,7 +70,7 @@ class BatchSearch:
             total=http_retries,
             connect=http_retries_on_connect,
             backoff_factor=http_backoff_factor,
-            status_forcelist=[104, 111, 429, 500, 502, 503, 504],
+            status_forcelist=[104, 111, 429, 502, 503, 504],
             method_whitelist=["HEAD", "GET", "OPTIONS", "POST", "DELETE", "PUT"]
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
@@ -84,8 +79,8 @@ class BatchSearch:
         http.mount("http://", adapter)
         return http
 
-    def __run(self, targets, parameters, priority, starting_materials):
-        payload = self.__prepare_payload(targets, parameters, priority, starting_materials)
+    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials):
+        payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials)
         response = self.http.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),
@@ -98,9 +93,17 @@ class BatchSearch:
     def from_id(cls, base_url, headers, search_id):
         return cls(base_url, headers, search_id)
 
-    def get_status(self):
+    def get(self):
         response = self.http.get(
             urljoin(self.base_url, f'{api_search_endpoint}/{self.search_id}'),
+            headers=self.headers,
+        )
+        maybe_handle_error(response)
+        return response.json()
+
+    def get_status(self):
+        response = self.http.get(
+            urljoin(self.base_url, f'{api_status_endpoint}/{self.search_id}'),
             headers=self.headers,
         )
         maybe_handle_error(response)
@@ -134,7 +137,13 @@ class BatchSearch:
             }
         )
         maybe_handle_error(response)
-        return response.json()
+        results = response.json()
+
+        precision_str = '.' + str(precision) + 'f'
+        results = traverse_modify(results, '[].result', lambda el: format(float(el), precision_str) if el else el)
+        results = traverse_modify(results, '[].certainty', lambda el: format(float(el), precision_str) if el else el)
+        results = traverse_modify(results, '[].price', lambda el: format(float(el), precision_str) if el else el)
+        return results
 
     def delete(self):
         response = self.http.delete(
