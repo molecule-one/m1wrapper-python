@@ -117,7 +117,7 @@ results = search.get_partial_results(precision=5)
 ```
 
 Returns JSON object of the following shape:
-```json
+```python
     [
       {
         'target_smiles': 'Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C',
