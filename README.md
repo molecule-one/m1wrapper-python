@@ -131,7 +131,7 @@ Returns JSON object of the following shape:
         'running_time': 68.187,
         'url': 'https://app.molecule.one/dashboard/synthesis-plans/batch/b787bf5f-6736-443c-bef1-8f10a37da246/result/0e3c6e13-fce1-46ba-9811-8fe66e0e4122'
       },
-    ...
+      ...
     ]
 ```
 
