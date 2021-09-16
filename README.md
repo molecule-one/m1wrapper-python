@@ -108,7 +108,7 @@ Returns an object of the following shape:
         'target_smiles': 'Cc1ccc(cc1Nc2nccc(n2)c3cccnc3)NC(=O)c4ccc(cc4)CN5CCN(CC5)C',
         'result': '7.53000'
       },
-    ...
+      ...
     ]
 ```
 #### All values:
