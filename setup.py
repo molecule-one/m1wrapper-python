@@ -9,7 +9,7 @@ with open('LICENSE') as f:
 
 setup(
     name='m1_api_wrapper',
-    version='2.0.0',
+    version='2.0.1',
     description='Molecule One API Wrapper',
     long_description=readme,
     long_description_content_type='text/markdown',
