@@ -36,6 +36,7 @@ search = m1wrapper.run_batch_search(
 - *priority* (optional): [priority of the batch request](#batch-scoring-priorities)
 - *invalid_target_strategy* (optional): if set to `InvalidTargetStrategy.PASS`, targets that cannot be canonized by our SMILES parser won't cause the whole batch request to be rejected. Defaults to `InvalidTargetStrategy.REJECT`.
 - *starting_materials* (optional): list of available compounds in SMILES format
+- *name* (optional): name for your batch search
 
 ### Batch scoring detail level
 Detail level determines how much information about each target synthesis you'll get. We define it as a `DetailLevel` enum with two variants:

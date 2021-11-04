@@ -1,4 +1,4 @@
-from m1wrapper import MoleculeOneWrapper, Priority, DetailLevel
+from m1wrapper import MoleculeOneWrapper, Priority, DetailLevel, InvalidTargetStrategy
 
 if __name__ == '__main__':
     # get your token at https://app.molecule.one/dashboard/user/api-tokens
@@ -14,7 +14,10 @@ if __name__ == '__main__':
             'cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
         parameters={'model': 'gat'},
         detail_level=DetailLevel.SCORE,
-        priority=Priority.LOW
+        priority=Priority.LOW,
+        invalid_target_strategy=InvalidTargetStrategy.REJECT,
+        starting_materials=None,
+        name='API EXAMPLE'
     )
     print('created search:', search.search_id)
 
@@ -31,7 +34,7 @@ if __name__ == '__main__':
     print("partial results:", partial_results)
 
     results = search.get_results(
-        precision=4, only=['target_smiles', 'price', 'result'])
+        precision=4, only=['target_smiles', 'price', 'result', 'name'])
     print('results:', results)
 
     m1wrapper.delete_batch_search(search.search_id)

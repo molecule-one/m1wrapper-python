@@ -36,6 +36,7 @@ class BatchSearch:
         priority=None,
         invalid_target_strategy=None,
         starting_materials=None,
+        name=None
     ):
         self.search_id = search_id
         self.base_url = base_url
@@ -48,17 +49,19 @@ class BatchSearch:
                     detail_level=detail_level,
                     priority=priority,
                     invalid_target_strategy=invalid_target_strategy,
-                    starting_materials=starting_materials
+                    starting_materials=starting_materials,
+                    name=name
             )
             self.search_id = new_search['id']
 
-    def __prepare_payload(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials ) -> dict:
+    def __prepare_payload(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name ) -> dict:
         payload = {
             'targets': targets,
             'parameters': parameters or {},
             'detail_level': detail_level,
             'priority': priority,
-            'invalid_target_strategy': invalid_target_strategy
+            'invalid_target_strategy': invalid_target_strategy,
+            'name': name
         }
         if starting_materials is not None:
             payload["starting_materials"] = starting_materials
@@ -79,8 +82,8 @@ class BatchSearch:
         http.mount("http://", adapter)
         return http
 
-    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials):
-        payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials)
+    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name):
+        payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name)
         response = self.http.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),
