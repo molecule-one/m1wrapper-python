@@ -34,7 +34,7 @@ if __name__ == '__main__':
     print("partial results:", partial_results)
 
     results = search.get_results(
-        precision=4, only=['target_smiles', 'price', 'result', 'name'])
+        precision=4, only=['target_smiles', 'price', 'result'])
     print('results:', results)
 
     m1wrapper.delete_batch_search(search.search_id)

@@ -60,11 +60,12 @@ class BatchSearch:
             'parameters': parameters or {},
             'detail_level': detail_level,
             'priority': priority,
-            'invalid_target_strategy': invalid_target_strategy,
-            'name': name
+            'invalid_target_strategy': invalid_target_strategy
         }
         if starting_materials is not None:
             payload["starting_materials"] = starting_materials
+        if name is not None:
+            payload["name"] = name
 
         return payload
 
