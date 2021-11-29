@@ -50,7 +50,7 @@ class MoleculeOneWrapper:
             'User-Agent': f'api-wrapper-python/{wrapper_version}',
             'Authorization': f'ApiToken-{api_token_version} {self.api_token}'
         }
-    
+
     def list_batch_searches(self):
         response = requests.get(
             urljoin(self.api_base_url, api_search_endpoint),
@@ -68,6 +68,7 @@ class MoleculeOneWrapper:
             priority = Priority.NORMAL,
             invalid_target_strategy = InvalidTargetStrategy.REJECT ,
             starting_materials: List[str] = None,
+            name = None
     ) -> BatchSearch:
         return BatchSearch(
                 self.api_base_url,
@@ -77,7 +78,8 @@ class MoleculeOneWrapper:
                 detail_level=detail_level,
                 priority=int(priority),
                 invalid_target_strategy=invalid_target_strategy,
-                starting_materials=starting_materials
+                starting_materials=starting_materials,
+                name=name
             )
 
     def get_batch_search(self, search_id: str) -> BatchSearch:
