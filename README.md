@@ -137,7 +137,7 @@ Returns JSON object of the following shape:
     ]
 ```
 
-See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/batch-scoring.md) for a full explaination of returned fields.
+See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/api-v2.md) for a full explaination of returned fields.
 
 ### Getting complete results:
 ```py
