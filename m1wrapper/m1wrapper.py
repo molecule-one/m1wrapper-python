@@ -1,4 +1,4 @@
-import requests
+import requests, copy
 from urllib.parse import urljoin
 from typing import List, Dict
 from enum import Enum, IntEnum
@@ -80,6 +80,39 @@ class MoleculeOneWrapper:
                 invalid_target_strategy=invalid_target_strategy,
                 starting_materials=starting_materials,
                 name=name
+            )
+
+    def run_batch_search_with_metadata(
+            self,
+            targets_with_metadata: List[Dict[str, str]],
+            parameters: Dict = None,
+            detail_level = DetailLevel.SCORE,
+            priority = Priority.NORMAL,
+            invalid_target_strategy = InvalidTargetStrategy.REJECT ,
+            starting_materials: List[str] = None,
+            name = None
+    ) -> BatchSearch:
+        targets = []
+        targets_with_metadata_copy = copy.deepcopy(targets_with_metadata)
+        metadata = {}
+        for index, item in enumerate(targets_with_metadata_copy):
+            target = item.pop('smiles', None)
+            targets.append(target)
+
+            if item:
+                metadata[str(index)] = item
+
+        return BatchSearch(
+                self.api_base_url,
+                self.request_headers,
+                targets=targets,
+                parameters=parameters,
+                detail_level=detail_level,
+                priority=int(priority),
+                invalid_target_strategy=invalid_target_strategy,
+                starting_materials=starting_materials,
+                name=name,
+                metadata=metadata
             )
 
     def get_batch_search(self, search_id: str) -> BatchSearch:
