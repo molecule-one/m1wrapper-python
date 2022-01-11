@@ -73,6 +73,21 @@ search = m1wrapper.run_batch_search(
 )
 ```
 
+### Batch scoring request with compound metadata
+`run_search_with_metadata(targets_with_metadata, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name)`
+- *targets_with_metadata*: list of target compounds with metadata. Each target compound should be a dictionary object of shape `{ smiles: str, name: str}` where the only required field is `smiles`.
+- *parameters* (optional): additional configuration for your batch
+  scoring request. See [Batch Scoring API](https://github.com/molecule-one/api/blob/master/api-v2.md) for more information.
+- *detail_level* (optional): [detail level of the batch request](#batch-scoring-detail-level)
+- *priority* (optional): [priority of the batch request](#batch-scoring-priorities)
+- *invalid_target_strategy* (optional): if set to `InvalidTargetStrategy.PASS`, targets that cannot be canonized by our SMILES parser won't cause the whole batch request to be rejected. Defaults to `InvalidTargetStrategy.REJECT`.
+- *starting_materials* (optional): list of available compounds in SMILES format
+- *name* (optional): name of your batch request
+
+```py
+run_search_with_metadata(targets_with_metadata=[{name: 'compound1', smiles: a}, {smiles: b}, {name: 'compound3', smiles: c}], priority=Priority.HIGH)
+```
+
 ### Getting exisiting scoring request by id:
 ```py
 search = m1wrapper.get_batch_search(id)
