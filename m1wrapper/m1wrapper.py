@@ -94,13 +94,13 @@ class MoleculeOneWrapper:
     ) -> BatchSearch:
         targets = []
         targets_with_metadata_copy = copy.deepcopy(targets_with_metadata)
-        metadata = {}
+        targets_metadata = {}
         for index, item in enumerate(targets_with_metadata_copy):
             target = item.pop('smiles', None)
             targets.append(target)
 
             if item:
-                metadata[str(index)] = item
+                targets_metadata[str(index)] = item
 
         return BatchSearch(
                 self.api_base_url,
@@ -112,7 +112,7 @@ class MoleculeOneWrapper:
                 invalid_target_strategy=invalid_target_strategy,
                 starting_materials=starting_materials,
                 name=name,
-                metadata=metadata
+                targets_metadata=targets_metadata
             )
 
     def get_batch_search(self, search_id: str) -> BatchSearch:
