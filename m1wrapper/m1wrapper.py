@@ -64,11 +64,12 @@ class MoleculeOneWrapper:
             self,
             targets: List[str],
             parameters: Dict = None,
-            detail_level = DetailLevel.SCORE,
-            priority = Priority.NORMAL,
-            invalid_target_strategy = InvalidTargetStrategy.REJECT ,
+            detail_level=DetailLevel.SCORE,
+            priority=Priority.NORMAL,
+            invalid_target_strategy=InvalidTargetStrategy.REJECT ,
             starting_materials: List[str] = None,
-            name = None
+            name=None,
+            use_fast_m1=False
     ) -> BatchSearch:
         return BatchSearch(
                 self.api_base_url,
@@ -79,7 +80,8 @@ class MoleculeOneWrapper:
                 priority=int(priority),
                 invalid_target_strategy=invalid_target_strategy,
                 starting_materials=starting_materials,
-                name=name
+                name=name,
+                use_fast_m1=use_fast_m1
             )
 
     def run_batch_search_with_metadata(
