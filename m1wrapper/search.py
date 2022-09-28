@@ -25,6 +25,12 @@ from .errors import (
     maybe_handle_error
 )
 
+
+class SearchEngine:
+    CLASSIC = 'classic'
+    FAST_M1 = 'fast_m1'
+
+
 class BatchSearch:
     def __init__(
         self,
@@ -39,13 +45,13 @@ class BatchSearch:
         starting_materials=None,
         name=None,
         targets_metadata=None,
-        use_fast_m1=False
+        search_engine=SearchEngine.CLASSIC
     ):
         self.search_id = search_id
         self.base_url = base_url
         self.headers = headers
         self.http = self.__prepare_http()
-        self.use_fast_m1 = use_fast_m1
+        self.search_engine = search_engine
         if self.search_id is None:
             new_search = self.__run(
                     targets=targets,
@@ -56,7 +62,7 @@ class BatchSearch:
                     starting_materials=starting_materials,
                     name=name,
                     targets_metadata=targets_metadata,
-                    use_fast_m1=use_fast_m1
+                    search_engine=search_engine
             )
             self.search_id = new_search['id']
 
@@ -67,7 +73,7 @@ class BatchSearch:
             'detail_level': detail_level,
             'invalid_target_strategy': invalid_target_strategy
         }
-        if not self.use_fast_m1:
+        if self.search_engine == SearchEngine.CLASSIC:
             payload['priority'] = priority
             payload['parameters'] = parameters or {}
         if starting_materials is not None:
@@ -93,10 +99,14 @@ class BatchSearch:
         http.mount("http://", adapter)
         return http
 
-    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata, use_fast_m1):
-        print('running with use_fast_m1={}'.format(use_fast_m1))
+    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata, search_engine):
         payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata)
-        endpoint = api_fast_search_endpoint if use_fast_m1 else api_search_endpoint
+        if search_engine == SearchEngine.CLASSIC:
+            endpoint = api_search_endpoint
+        elif search_engine == SearchEngine.FAST_M1:
+            endpoint = api_fast_search_endpoint
+        else:
+            raise ValueError('Search engine {} is not supported'.format(search_engine))
         response = self.http.post(
             urljoin(self.base_url, endpoint),
             data=json.dumps(payload),

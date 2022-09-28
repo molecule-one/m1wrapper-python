@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 from typing import List, Dict
 from enum import Enum, IntEnum
 
-from .search import BatchSearch
+from .search import BatchSearch, SearchEngine
 from .config import (
     api_token_version,
     wrapper_version,
@@ -69,7 +69,7 @@ class MoleculeOneWrapper:
             invalid_target_strategy=InvalidTargetStrategy.REJECT ,
             starting_materials: List[str] = None,
             name=None,
-            use_fast_m1=False
+            search_engine=SearchEngine.CLASSIC
     ) -> BatchSearch:
         return BatchSearch(
                 self.api_base_url,
@@ -81,7 +81,7 @@ class MoleculeOneWrapper:
                 invalid_target_strategy=invalid_target_strategy,
                 starting_materials=starting_materials,
                 name=name,
-                use_fast_m1=use_fast_m1
+                search_engine=search_engine
             )
 
     def run_batch_search_with_metadata(
