@@ -27,7 +27,7 @@ from .errors import (
 
 
 class SearchEngine:
-    CLASSIC = 'classic'
+    REGULAR = 'regular'
     FAST_M1 = 'fast_m1'
 
 
@@ -45,7 +45,7 @@ class BatchSearch:
         starting_materials=None,
         name=None,
         targets_metadata=None,
-        search_engine=SearchEngine.CLASSIC
+        search_engine=SearchEngine.REGULAR
     ):
         self.search_id = search_id
         self.base_url = base_url
@@ -73,7 +73,7 @@ class BatchSearch:
             'detail_level': detail_level,
             'invalid_target_strategy': invalid_target_strategy
         }
-        if self.search_engine == SearchEngine.CLASSIC:
+        if self.search_engine == SearchEngine.REGULAR:
             payload['priority'] = priority
             payload['parameters'] = parameters or {}
         if starting_materials is not None:
@@ -101,7 +101,7 @@ class BatchSearch:
 
     def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata, search_engine):
         payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata)
-        if search_engine == SearchEngine.CLASSIC:
+        if search_engine == SearchEngine.REGULAR:
             endpoint = api_search_endpoint
         elif search_engine == SearchEngine.FAST_M1:
             endpoint = api_fast_search_endpoint

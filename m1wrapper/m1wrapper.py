@@ -69,7 +69,7 @@ class MoleculeOneWrapper:
             invalid_target_strategy=InvalidTargetStrategy.REJECT ,
             starting_materials: List[str] = None,
             name=None,
-            search_engine=SearchEngine.CLASSIC
+            search_engine=SearchEngine.REGULAR
     ) -> BatchSearch:
         return BatchSearch(
                 self.api_base_url,
