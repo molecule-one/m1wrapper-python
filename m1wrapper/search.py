@@ -147,6 +147,9 @@ class BatchSearch:
         maybe_handle_error(response)
         results = response.json()
 
+        if precision is None:
+            return results
+
         precision_str = '.' + str(precision) + 'f'
         results = traverse_modify(results, '[].result', lambda el: format(float(el), precision_str) if el else el)
         results = traverse_modify(results, '[].certainty', lambda el: format(float(el), precision_str) if el else el)
