@@ -9,7 +9,7 @@ def format_error_message(error):
         return "unknown error"
 
 def is_json_response(response):
-    return response.headers.get('Content-Type').startswith('application/json')
+    return response.headers.get('Content-Type', '').startswith('application/json')
 
 
 def maybe_handle_error(response):
