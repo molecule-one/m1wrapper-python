@@ -36,6 +36,7 @@ class BatchSearch:
         priority=None,
         invalid_target_strategy=None,
         starting_materials=None,
+        preset=None,
         name=None,
         targets_metadata=None,
     ):
@@ -51,12 +52,13 @@ class BatchSearch:
                     priority=priority,
                     invalid_target_strategy=invalid_target_strategy,
                     starting_materials=starting_materials,
+                    preset=preset,
                     name=name,
                     targets_metadata=targets_metadata
             )
             self.search_id = new_search['id']
 
-    def __prepare_payload(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata) -> dict:
+    def __prepare_payload(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, preset, name, targets_metadata) -> dict:
         payload = {
             'targets': targets,
             'parameters': parameters or {},
@@ -66,6 +68,8 @@ class BatchSearch:
         }
         if starting_materials is not None:
             payload["starting_materials"] = starting_materials
+        if preset is not None:
+            payload["preset"] = preset 
         if name is not None:
             payload["name"] = name
         if targets_metadata is not None:
@@ -87,8 +91,8 @@ class BatchSearch:
         http.mount("http://", adapter)
         return http
 
-    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata):
-        payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, name, targets_metadata)
+    def __run(self, targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, preset, name, targets_metadata):
+        payload = self.__prepare_payload(targets, parameters, detail_level, priority, invalid_target_strategy, starting_materials, preset, name, targets_metadata)
         response = self.http.post(
             urljoin(self.base_url, api_search_endpoint),
             data=json.dumps(payload),
