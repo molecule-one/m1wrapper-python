@@ -68,6 +68,7 @@ class MoleculeOneWrapper:
             priority = Priority.NORMAL,
             invalid_target_strategy = InvalidTargetStrategy.REJECT ,
             starting_materials: List[str] = None,
+            preset = None,
             name = None
     ) -> BatchSearch:
         return BatchSearch(
@@ -79,6 +80,7 @@ class MoleculeOneWrapper:
                 priority=int(priority),
                 invalid_target_strategy=invalid_target_strategy,
                 starting_materials=starting_materials,
+                preset=preset,
                 name=name
             )
 
@@ -90,6 +92,7 @@ class MoleculeOneWrapper:
             priority = Priority.NORMAL,
             invalid_target_strategy = InvalidTargetStrategy.REJECT ,
             starting_materials: List[str] = None,
+            preset = None,
             name = None
     ) -> BatchSearch:
         targets = []
@@ -112,6 +115,7 @@ class MoleculeOneWrapper:
                 invalid_target_strategy=invalid_target_strategy,
                 starting_materials=starting_materials,
                 name=name,
+                preset=preset,
                 targets_metadata=targets_metadata
             )
 
