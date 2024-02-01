@@ -19,7 +19,8 @@ setup(
     license=license,
     packages=['m1wrapper'],
     install_requires=[
-        'requests'
+        'requests',
+        'urllib3'
     ] 
 )
 
