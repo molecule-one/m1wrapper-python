@@ -9,17 +9,18 @@ with open('LICENSE') as f:
 
 setup(
     name='m1_api_wrapper',
-    version='2.1.1',
-    description='Molecule One API Wrapper',
+    version='2.1.2',
+    description='M1 RetroScore API Wrapper',
     long_description=readme,
     long_description_content_type='text/markdown',
-    author='Szymon Pilkowski',
-    author_email='szymon.pilkowski@molecule.one',
+    author='Molecule.one',
+    author_email='support@molecule.one',
     url='https://github.com/molecule-one/m1wrapper-python',
     license=license,
     packages=['m1wrapper'],
     install_requires=[
-        'requests'
+        'requests==2.28.2',
+        'urllib3==1.25.11'
     ] 
 )
 
