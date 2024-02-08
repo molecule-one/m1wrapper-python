@@ -1,10 +1,12 @@
+# Full documentation available at: https://hub.YOUR_INSTANCE.molecule.one/docs/retro
+
 from m1wrapper import MoleculeOneWrapper, Priority, DetailLevel, InvalidTargetStrategy
 
 if __name__ == '__main__':
-    # get your token at https://app.molecule.one/dashboard/user/api-tokens
-    token = 'f4614b1d96124d09ab14fbe6537c9007_4ea55651a3904037b9fe4c4a72d2b85d'
+    # Get your token at https://retro.YOUR_INSTANCE.molecule.one/dashboard/settings/api-tokens
+    token = 'YOUR_TOKEN'
 
-    m1wrapper = MoleculeOneWrapper(token)
+    m1wrapper = MoleculeOneWrapper(token, 'https://retro.YOUR_INSTANCE.molecule.one')
 
     searches = m1wrapper.list_batch_searches()
     print('previous searches:', searches)
@@ -12,8 +14,8 @@ if __name__ == '__main__':
     search = m1wrapper.run_batch_search(
         targets=[
             'cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
-        parameters={'model': 'gat'},
-        detail_level=DetailLevel.SCORE,
+        parameters={'model': 'metro2'},
+        detail_level=DetailLevel.SYNTHESIS,
         priority=Priority.LOW,
         invalid_target_strategy=InvalidTargetStrategy.REJECT,
         starting_materials=None,
