@@ -14,7 +14,7 @@ if __name__ == '__main__':
     search = m1wrapper.run_batch_search(
         targets=[
             'cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
-        parameters={'model': 'metro2'},
+        parameters={'model': 'metro'},
         detail_level=DetailLevel.SYNTHESIS,
         priority=Priority.LOW,
         invalid_target_strategy=InvalidTargetStrategy.REJECT,
