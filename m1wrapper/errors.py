@@ -1,10 +1,12 @@
 import requests
 
 def format_error_message(error):
-    if error["message"] and error["errors"]:
+    if "message" in error and "errors" in error:
         return f'{error["message"]}: {repr(error["errors"])}'
-    if error["message"]:
+    if "message" in error:
         return f'{error["message"]}'
+    if "errors" in error:
+        return f'{error["errors"]}'
     else:
         return "unknown error"
 
