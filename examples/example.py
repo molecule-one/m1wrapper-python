@@ -15,7 +15,7 @@ if __name__ == '__main__':
         targets=[
             'cc', 'O=C(Nc1cc(Nc2nc(-c3cnccc3)ccn2)c(cc1)C)c3ccc(cc3)CN3CCN(CC3)C'],
         parameters={'model': 'metro'},
-        detail_level=DetailLevel.SYNTHESIS,
+        detail_level=DetailLevel.BEST_PATH,
         priority=Priority.LOW,
         invalid_target_strategy=InvalidTargetStrategy.REJECT,
         name='API EXAMPLE'
