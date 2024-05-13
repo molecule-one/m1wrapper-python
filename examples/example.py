@@ -18,7 +18,6 @@ if __name__ == '__main__':
         detail_level=DetailLevel.SYNTHESIS,
         priority=Priority.LOW,
         invalid_target_strategy=InvalidTargetStrategy.REJECT,
-        starting_materials=None,
         name='API EXAMPLE'
     )
     print('created search:', search.search_id)
