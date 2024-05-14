@@ -24,7 +24,8 @@ class Priority(IntEnum):
 
 class DetailLevel(str, Enum):
     SCORE = 'score',
-    SYNTHESIS = 'synthesis'
+    BEST_PATH = 'best_path',
+    ALL_PATHS = 'all_paths'
 
 class InvalidTargetStrategy(str, Enum):
     REJECT = 'reject',
@@ -67,7 +68,6 @@ class MoleculeOneWrapper:
             detail_level = DetailLevel.SCORE,
             priority = Priority.NORMAL,
             invalid_target_strategy = InvalidTargetStrategy.REJECT ,
-            starting_materials: List[str] = None,
             preset = None,
             name = None
     ) -> BatchSearch:
@@ -79,7 +79,6 @@ class MoleculeOneWrapper:
                 detail_level=detail_level,
                 priority=int(priority),
                 invalid_target_strategy=invalid_target_strategy,
-                starting_materials=starting_materials,
                 preset=preset,
                 name=name
             )
@@ -91,7 +90,6 @@ class MoleculeOneWrapper:
             detail_level = DetailLevel.SCORE,
             priority = Priority.NORMAL,
             invalid_target_strategy = InvalidTargetStrategy.REJECT ,
-            starting_materials: List[str] = None,
             preset = None,
             name = None
     ) -> BatchSearch:
@@ -113,7 +111,6 @@ class MoleculeOneWrapper:
                 detail_level=detail_level,
                 priority=int(priority),
                 invalid_target_strategy=invalid_target_strategy,
-                starting_materials=starting_materials,
                 name=name,
                 preset=preset,
                 targets_metadata=targets_metadata
