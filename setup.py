@@ -9,7 +9,7 @@ with open('LICENSE') as f:
 
 setup(
     name='m1_api_wrapper',
-    version='3.0.0',
+    version='3.0.1',
     description='M1 RetroScore API Wrapper',
     long_description=readme,
     long_description_content_type='text/markdown',
