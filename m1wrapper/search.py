@@ -2,11 +2,12 @@ import requests
 import json
 import time
 import logging
+import urllib3
 from typing import List
 from urllib.parse import urljoin
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-requests.packages.urllib3.add_stderr_logger(logging.WARNING)
+from urllib3.util import Retry
+urllib3.add_stderr_logger(logging.WARNING)
 
 from .traverse import traverse_modify
 
@@ -79,7 +80,7 @@ class BatchSearch:
             connect=http_retries_on_connect,
             backoff_factor=http_backoff_factor,
             status_forcelist=[104, 111, 429, 502, 503, 504],
-            method_whitelist=["HEAD", "GET", "OPTIONS", "POST", "DELETE", "PUT"]
+            allowed_methods=["HEAD", "GET", "OPTIONS", "POST", "DELETE", "PUT"]
         )
         adapter = HTTPAdapter(max_retries=retry_strategy)
         http = requests.Session()
